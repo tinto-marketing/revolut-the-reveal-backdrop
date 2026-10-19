@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="6000" height="3000" viewBox="0 0 6000 3000"><defs>
+    <radialGradient id="vigG" cx="3000.0" cy="1350" r="3720.0" gradientUnits="userSpaceOnUse" gradientTransform="translate(3000.0 1350) scale(1 0.5108) translate(-3000.0 -1350)">
+      <stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#fff"/><stop offset=".97" stop-color="#000"/></radialGradient>
+    <radialGradient id="safeG" cx="3000.0" cy="1100" r="1" gradientUnits="objectBoundingBox" fx=".5" fy=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".88"/><stop offset=".55" stop-color="#000" stop-opacity=".62"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <mask id="vig" maskUnits="userSpaceOnUse" x="0" y="0" width="6000" height="3000"><rect width="6000" height="3000" fill="url(#vigG)"/></mask>
+    <mask id="safe" maskUnits="userSpaceOnUse" x="0" y="0" width="6000" height="3000"><rect width="6000" height="3000" fill="url(#vigG)"/>
+      <ellipse cx="3000.0" cy="1100" rx="1750" ry="820" fill="url(#safeGb)"/></mask>
+    <radialGradient id="safeGb"><stop offset="0" stop-color="#000" stop-opacity=".9"/><stop offset=".6" stop-color="#000" stop-opacity=".7"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+      <radialGradient id="sun" cx="3000.0" cy="3250" r="3720.0" gradientUnits="userSpaceOnUse" gradientTransform="translate(3000.0 3250) scale(1 0.6989) translate(-3000.0 -3250)"><stop offset="0" stop-color="#E2560C" stop-opacity="0.98"/><stop offset="0.22" stop-color="#F78400" stop-opacity="0.95"/><stop offset="0.48" stop-color="#FFB62A" stop-opacity="0.78"/><stop offset="0.75" stop-color="#DCD1B1" stop-opacity="0.25"/><stop offset="1" stop-color="#DCD1B1" stop-opacity="0"/></radialGradient>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="3000" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#599087" stop-opacity="0.55"/><stop offset="0.35" stop-color="#17423C" stop-opacity="0.25"/><stop offset="0.6" stop-color="#17423C" stop-opacity="0"/></linearGradient>
+      <linearGradient id="ln" x1="0" y1="0" x2="6000" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#DCD1B1" stop-opacity="0"/><stop offset="0.2" stop-color="#DCD1B1" stop-opacity="0.8"/><stop offset="0.5" stop-color="#FFB62A" stop-opacity="0.95"/><stop offset="0.8" stop-color="#DCD1B1" stop-opacity="0.8"/><stop offset="1" stop-color="#DCD1B1" stop-opacity="0"/></linearGradient>
+    </defs><g mask="url(#safe)"><rect width="6000" height="3000" fill="url(#sky)"/><rect width="6000" height="3000" fill="url(#sun)"/></g></svg>

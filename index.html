@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Backdrop · The Reveal</title>
+<meta name="description" content="Backdrop Clear V2 · Revolut F1 Team The Reveal · opções em 3 camadas (6 × 3 m e 9 × 3 m)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112..125,500..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<style>
+/* Layout: palco escuro dominante (a peça), controles em trilho abaixo; 5 opções como fita de miniaturas. Tema único escuro — o objeto é um painel preto. */
+:root{
+  --bg:#0b0d0c; --panel:#141815; --line:#262c27; --fg:#eef0ea; --mut:#9aa39a;
+  --amber:#FFB62A; --orange:#F78400; --cream:#DCD1B1; --teal:#8CC3B5;
+  --display:"Archivo",system-ui,sans-serif; --body:"Instrument Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:22px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px}
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+h1{font:800 clamp(26px,4.4vw,44px)/1 var(--display);font-stretch:125%;letter-spacing:-.01em;margin:8px 0 0;text-wrap:balance}
+h1 span{color:var(--amber)}
+.lede{color:var(--mut);max-width:60ch;margin:0}
+h2{font:700 15px/1.2 var(--display);font-stretch:118%;margin:0;letter-spacing:.01em}
+
+/* fita de opções */
+.famrow{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.opts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.opt{all:unset;cursor:pointer;display:grid;gap:7px;border-radius:6px;padding:6px;border:1px solid var(--line);background:var(--panel);min-width:0}
+.opt:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.opt[aria-pressed="true"]{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset}
+.opt .mini{position:relative;aspect-ratio:2/1;background:#000;border-radius:3px;overflow:hidden;max-width:100%}
+.opt .mini img{position:absolute;inset:0;width:100%;height:100%}
+.opt .lab{display:flex;gap:8px;align-items:baseline;font:600 13px/1.2 var(--body);min-width:0}
+.opt .lab b{font:800 15px/1 var(--display);font-stretch:125%;color:var(--amber)}
+.opt .lab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* palco */
+.stagebox{background:#000;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative}
+.stage{position:relative;width:100%;aspect-ratio:var(--ar,2/1);margin:0 auto;perspective:2200px;perspective-origin:50% 45%;touch-action:none;cursor:grab}
+.stage:active{cursor:grabbing}
+.rig{position:absolute;inset:6%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.rig.dragging{transition:none}
+.layer{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .3s}
+.layer img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.layer.c3 .plate{position:absolute;inset:0;background:linear-gradient(160deg,#0c0e0d,#000 55%);box-shadow:0 0 0 1px #2a302b}
+.layer .edge{position:absolute;inset:0;border:1px solid rgba(200,225,215,.22);pointer-events:none}
+.layer.c3 .edge{border-color:rgba(200,225,215,.12)}
+.layer .tag{position:absolute;left:0;top:-30px;font:500 11px/1 var(--mono);letter-spacing:.08em;color:var(--fg);background:rgba(10,14,12,.85);border:1px solid #3a443c;padding:6px 8px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.exploded .layer.c3 .edge{border-color:rgba(200,225,215,.4)}
+.exploded .layer .tag{opacity:1;font-size:22px;padding:10px 14px;top:-56px}
+.wm img{filter:drop-shadow(0 0 6px rgba(255,255,255,.55)) drop-shadow(0 0 18px rgba(255,255,255,.25))}
+.noWhite .layer.c1 img.art,.noWhite .layer.c2 img.art{filter:brightness(.16) saturate(1.4)}
+.off{opacity:0!important;pointer-events:none}
+.hint{position:absolute;right:12px;bottom:10px;font:500 11px/1 var(--mono);color:#7f887f;pointer-events:none;padding-right:env(safe-area-inset-right,0px)}
+
+/* controles */
+.bar{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-start}
+.ctl{display:grid;gap:8px;min-width:0}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--panel);gap:2px}
+.seg button{all:unset;cursor:pointer;font:500 13px/1 var(--body);padding:8px 13px;border-radius:999px;color:var(--mut)}
+.seg button:focus-visible{outline:2px solid var(--amber)}
+.seg button[aria-pressed="true"]{background:var(--cream);color:#111}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px}
+.checks label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--fg);cursor:pointer}
+.checks input{accent-color:var(--amber)}
+
+/* info */
+.grid2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;min-width:0;align-content:start}
+.layers{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.layers li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start}
+.layers .k{font:800 15px/1 var(--display);font-stretch:125%;padding-top:2px}
+.layers .k.c1{color:var(--teal)}.layers .k.c2{color:var(--amber)}.layers .k.c3{color:var(--mut)}.layers .k.lc{color:#fff}
+.layers p{margin:0;color:var(--mut)}
+.layers strong{color:var(--fg);font-weight:600;display:block}
+.render{width:100%;border-radius:4px;display:block;max-width:100%}
+.spec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:13px;margin:0}
+.spec dt{font:500 12px/1.5 var(--mono);color:var(--mut)}
+.spec dd{margin:0}
+.note{font-size:13px;color:var(--mut);margin:0}
+.note b{color:var(--cream);font-weight:600}
+.section{display:grid;gap:12px}
+.compare{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.compare figure{margin:0;display:grid;gap:6px}
+.compare .mini{position:relative;aspect-ratio:2/1;background:#000;border-radius:4px;overflow:hidden;cursor:pointer;max-width:100%}
+.compare .mini img{position:absolute;inset:0;width:100%;height:100%}
+.compare figcaption{font-size:13px;color:var(--mut)}
+.compare figcaption b{color:var(--fg);font-weight:600}
+@media (max-width:820px){.opts{grid-template-columns:repeat(3,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
+@media (max-width:480px){.opts{grid-template-columns:repeat(2,minmax(0,1fr))}.hint{display:none}}
+@media (prefers-reduced-motion:reduce){.rig,.layer{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">The Reveal · Audi Revolut F1 Team · 11_BACKDROP</div>
+      <h1>Backdrop clear <span>V2</span></h1>
+    </div>
+    <p class="lede">15 opções em três famílias. C3 preta ao fundo; C2 e C1 em adesivo clear; Revolut em letra caixa de 20 mm na frente. Escolha uma opção e gire o painel para ver a profundidade.</p>
+  </header>
+
+  <div class="famrow"><span class="eyebrow">Família</span>
+    <div class="seg" id="fam"><button data-v="todas">Todas · 15</button><button data-v="iniciais">Iniciais</button><button data-v="horizonte">Horizonte</button><button data-v="aurora">Aurora</button></div>
+  </div>
+  <nav class="opts" id="opts" aria-label="Opções"></nav>
+
+  <div class="stagebox">
+    <div class="stage" id="stage">
+      <div class="rig" id="rig">
+        <div class="layer c3" data-z="0"><div class="plate"></div><div class="edge"></div><div class="tag">C3 · preta</div></div>
+        <div class="layer c2" data-z="1"><img class="art" alt=""><div class="edge"></div><div class="tag">C2 · clear intermediária</div></div>
+        <div class="layer c1" data-z="2"><img class="art" alt=""><div class="edge"></div><div class="tag">C1 · clear + marcas</div></div>
+        <div class="layer wm" data-z="3"><img alt="Revolut em letra caixa"><div class="tag" style="left:auto;right:0">Letra caixa 20 mm</div></div>
+      </div>
+    </div>
+    <div class="hint">arraste para girar</div>
+  </div>
+
+  <div class="bar">
+    <div class="ctl"><span class="eyebrow">Peça</span>
+      <div class="seg" id="piece">
+        <button data-v="6" aria-pressed="true">Backdrop 6×3 m</button><button data-v="6b">Bar 6×3 m</button><button data-v="9">Check-in 9×3 m</button>
+      </div></div>
+    <div class="ctl"><span class="eyebrow">Vista</span>
+      <div class="seg" id="view">
+        <button data-v="front" aria-pressed="true">Frontal</button><button data-v="walk">Passando</button><button data-v="angle">Em ângulo</button><button data-v="exploded">Explodida</button>
+      </div></div>
+    <div class="ctl"><span class="eyebrow">Afastamento entre planos</span>
+      <div class="seg" id="gap">
+        <button data-v="50">50 mm</button><button data-v="100" aria-pressed="true">100 mm</button><button data-v="150">150 mm</button>
+      </div></div>
+    <div class="ctl"><span class="eyebrow">Camadas</span>
+      <div class="checks">
+        <label><input type="checkbox" id="t-c3" checked> C3</label>
+        <label><input type="checkbox" id="t-c2" checked> C2</label>
+        <label><input type="checkbox" id="t-c1" checked> C1</label>
+        <label><input type="checkbox" id="t-wm" checked> Letra caixa</label>
+        <label><input type="checkbox" id="t-white" checked> Branco seletivo</label>
+      </div></div>
+  </div>
+
+  <div class="grid2">
+    <section class="card">
+      <h2 id="optTitle">A · Portal</h2>
+      <p class="note" id="optDesc"></p>
+      <ul class="layers" id="layerList"></ul>
+    </section>
+    <section class="card">
+      <h2>Modelo 3D</h2>
+      <img class="render" id="render" alt="Vista 3D da opção montada">
+      <dl class="spec">
+        <dt>Medidas</dt><dd id="specSize">6,00 × 3,00 m</dd>
+        <dt>Letra caixa</dt><dd>20 mm, branca, retroiluminada</dd>
+        <dt>Afastamento</dt><dd><span id="specGap">100 mm</span> entre planos (a definir com a produção)</dd>
+        <dt>Arquivos</dt><dd>CLEAR_3-CAMADAS_V2_IMERSIVO</dd>
+      </dl>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Por que o branco seletivo importa</h2>
+    <p class="note">Tinta transparente sobre o preto escurece e quase desaparece. Desmarque <b>Branco seletivo</b> acima para ver o efeito. A solução é imprimir branco só onde há cor, com densidade igual à opacidade do degradê, sem fundo branco total. Os arquivos de branco já estão na pasta <b>BRANCO-SELETIVO</b>. Como a C3 preta não deixa passar luz, prever LED rasante entre os planos ou luz frontal quente.</p>
+  </section>
+
+  <section class="section">
+    <h2>Lado a lado · check-in 9×3 m</h2>
+    <div class="compare" id="compare"></div>
+  </section>
+</div>
+
+<script>
+const OPTS=[
+ {k:'A',n:'Portal',d:'Anéis de luz arredondados se abrem em túnel ao redor das marcas. O centro preto guarda o Revolut.',
+  c2:'Sete anéis âmbar/cream, mais largos e espaçados para fora, como perspectiva.',c1:'Filetes finos mint/cream entre os anéis da C2.'},
+ {k:'B',n:'Aurora',d:'Véus de luz atravessam o painel e deslizam um sobre o outro conforme o público anda.',
+  c2:'Três véus largos âmbar/laranja com bordas difusas.',c1:'Véus finos teal/cream em contrafase.'},
+ {k:'C',n:'Horizonte',d:'Um sol âmbar nasce do chão atrás de linhas em perspectiva: leitura de horizonte infinito.',
+  c2:'Brilho âmbar vindo da base e céu teal no topo.',c1:'Linhas horizontais, grossas embaixo e finas em cima.'},
+ {k:'D',n:'Campo de ondas',d:'Faixas onduladas alternadas entre as duas camadas. De frente elas se completam; em ângulo se separam.',
+  c2:'Faixas onduladas âmbar/laranja (uma sim, uma não).',c1:'Faixas onduladas teal encaixadas entre as da C2.'},
+ {k:'E',n:'Velocidade',d:'Feixes de luz partem de trás do Revolut, com sensação de aceleração.',
+  c2:'Feixes largos âmbar/laranja.',c1:'Feixes finos cream/mint em outros ângulos.'},
+ {k:'F',n:'Sol fatiado',d:'Um disco de sol nítido pousa no horizonte, abaixo das marcas, cortado por faixas claras.',
+  c2:'Disco de sol âmbar/laranja com coroa difusa e céu teal.',c1:'Faixas cream que fatiam o disco e linhas de chão em perspectiva.'},
+ {k:'G',n:'Pista',d:'O horizonte vira uma pista: a grade do chão converge para trás do Revolut.',
+  c2:'Sol âmbar vindo do chão e céu teal.',c1:'Grade em perspectiva, linhas horizontais e de fuga.'},
+ {k:'H',n:'Horizonte ondulado',d:'As linhas do chão ondulam e ficam mais amplas perto do público.',
+  c2:'Sol âmbar vindo do chão e céu teal.',c1:'Linhas onduladas, mais largas e amplas perto do público.'},
+ {k:'I',n:'Neblina',d:'Serras de neblina luminosa empilhadas até o horizonte, cada uma em uma profundidade.',
+  c2:'Serras âmbar difusas sobre o brilho do chão.',c1:'Neblina cream e cristas finas que desenham o relevo.'},
+ {k:'J',n:'Horizonte noturno',d:'O Horizonte com temperatura invertida: luz fria no chão, linhas quentes.',
+  c2:'Brilho teal/mint vindo do chão e céu âmbar discreto.',c1:'Linhas âmbar em perspectiva.'},
+ {k:'K',n:'Cortinas',d:'Aurora boreal: cortinas de luz com base luminosa que se dissolvem para cima.',
+  c2:'Cortinas largas âmbar/laranja, difusas.',c1:'Cortinas finas teal/mint, mais nítidas.'},
+ {k:'L',n:'Seda',d:'Uma fita de seda atravessa o painel. Na C1 o mesmo caminho vira dezenas de filetes que se torcem, criando moiré quando o público anda.',
+  c2:'Véus difusos âmbar/cream.',c1:'Feixes de filetes mint/cream e âmbar torcendo sobre o véu.'},
+ {k:'M',n:'Rastros',d:'Rastros de luz de longa exposição, como carros de F1 passando à noite.',
+  c2:'Brilho difuso de cada rastro.',c1:'Núcleo fino e nítido de cada rastro.'},
+ {k:'N',n:'Chama',d:'Véus de luz sobem do chão como chamas, em movimento vertical.',
+  c2:'Véus âmbar/laranja subindo, difusos.',c1:'Filetes frios mint/cream entre as chamas.'},
+ {k:'O',n:'Aurora noturna',d:'A Aurora com temperatura invertida: véus frios ao fundo, luz quente na frente.',
+  c2:'Véus largos teal/mint.',c1:'Véus finos âmbar.'}
+];
+const FAM={todas:'ABCDEFGHIJKLMNO',iniciais:'ABCDE',horizonte:'CFGHIJ',aurora:'BKLMNO'};
+let S={opt:'A',piece:'6',view:'front',gap:100,rx:0,ry:0,fam:'todas'};
+try{const s=JSON.parse(localStorage.getItem('bdv2')||'{}');Object.assign(S,s)}catch(e){}
+const $=q=>document.querySelector(q),rig=$('#rig'),stage=$('#stage');
+const src=(o,w,c)=>`a/${o}${w}_${c}.svg`;
+function w(){return S.piece==='9'?'9':'6'}
+function save(){try{localStorage.setItem('bdv2',JSON.stringify({opt:S.opt,piece:S.piece,view:S.view,gap:S.gap,fam:S.fam}))}catch(e){}}
+
+// fita de opções e comparação
+for(const o of OPTS){
+  const b=document.createElement('button');b.className='opt';b.dataset.k=o.k;
+  b.innerHTML=`<div class="mini"><img src="${src(o.k,6,'c2')}" alt=""><img src="${src(o.k,6,'c1')}" alt=""><img src="a/wm6.svg" alt=""></div><div class="lab"><b>${o.k}</b><span>${o.n}</span></div>`;
+  b.onclick=()=>{S.opt=o.k;render()};$('#opts').appendChild(b);
+  const f=document.createElement('figure');
+  f.innerHTML=`<div class="mini" role="button" tabindex="0" aria-label="Abrir opção ${o.k}"><img src="${src(o.k,9,'c2')}" alt=""><img src="${src(o.k,9,'c1')}" alt=""><img src="a/wm9.svg" alt=""></div><figcaption><b>${o.k} · ${o.n}</b></figcaption>`;
+  f.querySelector('.mini').onclick=()=>{S.opt=o.k;S.piece='9';render();stage.scrollIntoView({behavior:'smooth',block:'center'})};
+  f.querySelector('.mini').onkeydown=e=>{if(e.key==='Enter')f.querySelector('.mini').click()};
+  f.dataset.k=o.k;$('#compare').appendChild(f);
+}
+function seg(id,key,num){for(const b of document.querySelectorAll(`#${id} button`)){b.onclick=()=>{S[key]=num?+b.dataset.v:b.dataset.v;if(key==='view'){S.rx=0;S.ry=0}render()}}}
+seg('piece','piece');seg('fam','fam');seg('view','view');seg('gap','gap',true);
+for(const id of ['c3','c2','c1','wm'])$('#t-'+id).onchange=e=>$('.layer.'+id).classList.toggle('off',!e.target.checked);
+$('#t-white').onchange=e=>stage.classList.toggle('noWhite',!e.target.checked);
+
+const VIEWS={front:{rx:0,ry:0,ex:1},walk:{rx:2,ry:-24,ex:1},angle:{rx:8,ry:38,ex:1},exploded:{rx:10,ry:-40,ex:0,sc:.55}};
+function layout(){
+  const v=VIEWS[S.view],box=rig.getBoundingClientRect(),Wm=w()==='9'?9000:6000;
+  const pxPerMm=box.width/Wm;
+  // profundidade real em mm convertida para px do palco; a vista explodida amplia para leitura
+  const ex=S.view==='exploded';const step=box.width*.32;
+  const z=i=>ex?(i===3?2*step+40:i*step):(i===3?(2*S.gap+20)*pxPerMm:i*S.gap*pxPerMm);
+  const spread=0;
+  document.querySelectorAll('.layer').forEach(l=>{const i=+l.dataset.z;l.style.transform=`translate3d(${(i-1.5)*spread}px,0,${z(i)}px)`});
+  rig.style.transform=`translateY(${ex?box.height*.12:0}px) scale(${v.sc||1}) translateZ(${ex?-step*1.5:-S.gap*pxPerMm}px) rotateX(${v.rx+S.rx}deg) rotateY(${v.ry+S.ry}deg)`;
+  stage.classList.toggle('exploded',S.view==='exploded');
+}
+function render(){
+  const o=OPTS.find(x=>x.k===S.opt);
+  $('.layer.c2 img').src=src(o.k,w(),'c2');$('.layer.c1 img').src=src(o.k,w(),'c1');$('.layer.wm img').src=`a/wm${w()}.svg`;
+  stage.style.setProperty('--ar',w()==='9'?'3/1':'2/1');
+  document.querySelectorAll('#opts .opt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===o.k));
+  const fam=FAM[S.fam]||FAM.todas;document.querySelectorAll('#opts .opt,#compare figure').forEach(e=>e.hidden=!fam.includes(e.dataset.k));
+  for(const [id,key] of [['piece','piece'],['view','view'],['gap','gap'],['fam','fam']])document.querySelectorAll(`#${id} button`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v)===String(S[key])));
+  $('#optTitle').textContent=`${o.k} · ${o.n}`;$('#optDesc').textContent=o.d;
+  $('#layerList').innerHTML=`<li><span class="k lc">LC</span><p><strong>Letra caixa · frente</strong>Revolut branco, 20 mm de profundidade, retroiluminado. Peça separada, fixada na C1.</p></li>
+   <li><span class="k c1">C1</span><p><strong>Clear frontal</strong>${o.c1} Lockup Audi Revolut F1 Team e Adidas impressos em branco.</p></li>
+   <li><span class="k c2">C2</span><p><strong>Clear intermediária</strong>${o.c2}</p></li>
+   <li><span class="k c3">C3</span><p><strong>Preta · fundo</strong>Plano opaco. Faz os degradês parecerem flutuar.</p></li>`;
+  $('#render').src=`a/${o.k}_3d.jpg`;
+  $('#specSize').textContent=w()==='9'?'9,00 × 3,00 m':'6,00 × 3,00 m';$('#specGap').textContent=S.gap+' mm';
+  layout();save();
+}
+// arrastar para girar
+let drag=null;
+stage.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,rx:S.rx,ry:S.ry};rig.classList.add('dragging');stage.setPointerCapture(e.pointerId)});
+stage.addEventListener('pointermove',e=>{if(!drag)return;S.ry=Math.max(-70,Math.min(70,drag.ry+(e.clientX-drag.x)*.25));S.rx=Math.max(-25,Math.min(30,drag.rx-(e.clientY-drag.y)*.2));layout()});
+const end=()=>{drag=null;rig.classList.remove('dragging')};stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+addEventListener('resize',layout);
+render();
+</script>
+
+</body></html>
